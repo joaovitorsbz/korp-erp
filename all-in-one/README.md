@@ -67,8 +67,8 @@ Ainda na VM, copie o projeto para lá com o comando abaixo (troque a URL
 pelo endereço do repositório no GitHub):
 
 ```bash
-git clone https://github.com/SEU-USUARIO/korp.git
-cd korp/ansible
+git clone https://github.com/joaovitorsbz/korp-erp.git
+cd korp-erp/all-in-one/ansible
 ```
 
 ## Passo 3 — Rodar o comando único que monta tudo
@@ -77,7 +77,7 @@ Este é o comando principal. Ele instala tudo que falta, organiza os
 serviços e deixa o projeto pronto para uso:
 
 ```bash
-ansible-playbook -i inventory.ini playbook.yml -K
+sudo ansible-playbook -i inventory.ini playbook.yml
 ```
 
 Assim que você apertar Enter, vai aparecer a mensagem `BECOME password:`.
@@ -85,7 +85,7 @@ Digite a **senha de administrador (sudo) da própria VM** e aperte Enter
 (a senha não aparece na tela enquanto você digita — é normal, continue e
 aperte Enter no final).
 
-O processo leva alguns minutos. Ele vai, na ordem:
+O processo pode levar alguns minutos dependendo dos recursos disponiveis na VM. Ele vai, na ordem:
 
 1. Instalar o Docker (o programa que "empacota" e roda os serviços);
 2. Criar uma rede interna para os serviços conversarem entre si;
