@@ -1,0 +1,24 @@
+---
+- name: Atualizar cache do apt
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Instalar Docker Engine e plugin docker compose
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-compose-v2
+    state: present
+
+- name: Garantir que o servico docker esta habilitado e ativo
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Adicionar usuario atual ao grupo docker (uso interativo futuro)
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true

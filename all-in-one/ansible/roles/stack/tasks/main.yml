@@ -1,0 +1,43 @@
+---
+- name: Verificar configuracao do NGINX (proxy reverso) presente
+  ansible.builtin.stat:
+    path: "{{ project_root }}/nginx/conf.d/{{ korp_service_name }}.conf"
+  register: nginx_conf
+
+- name: Falhar se a configuracao do NGINX estiver ausente
+  ansible.builtin.fail:
+    msg: "Arquivo de configuracao do NGINX nao encontrado em {{ project_root }}/nginx/conf.d/"
+  when: not nginx_conf.stat.exists
+
+- name: Verificar configuracao dos componentes de monitoramento presente
+  ansible.builtin.stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ project_root }}/monitoring/prometheus/prometheus.yml"
+    - "{{ project_root }}/monitoring/grafana/provisioning/datasources/datasource.yml"
+    - "{{ project_root }}/monitoring/grafana/provisioning/dashboards/dashboards.yml"
+  register: monitoring_files
+
+- name: Falhar se alguma configuracao de monitoramento estiver ausente
+  ansible.builtin.fail:
+    msg: "Configuracao de monitoramento ausente: {{ item.item }}"
+  loop: "{{ monitoring_files.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: not item.stat.exists
+
+- name: Build da imagem do servico {{ korp_service_name }} via docker compose
+  ansible.builtin.command: docker compose -f {{ project_root }}/docker-compose.yml build
+  args:
+    chdir: "{{ project_root }}"
+  environment:
+    KORP_HTTP_PORT: "{{ korp_http_port }}"
+  changed_when: true
+
+- name: Subir a stack completa (app, nginx, prometheus, grafana)
+  ansible.builtin.command: docker compose -f {{ project_root }}/docker-compose.yml up -d
+  args:
+    chdir: "{{ project_root }}"
+  environment:
+    KORP_HTTP_PORT: "{{ korp_http_port }}"
+  changed_when: true

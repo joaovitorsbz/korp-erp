@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projeto Korp</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg-card: #16213c;
+    --border: #27324f;
+    --text: #e6ebf5;
+    --text-dim: #93a1c2;
+    --accent: #4f8cff;
+    --accent-hover: #6ea0ff;
+    --mono-bg: #0b1120;
+    --up: #34d399;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(79, 140, 255, .12);
+    border: 1px solid rgba(79, 140, 255, .3);
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 2.2rem;
+    margin: 0 0 8px;
+  }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    margin: 0;
+  }
+  .cta {
+    text-align: center;
+    margin: 36px 0 56px;
+  }
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #06122b;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 1.02rem;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+  .btn small {
+    display: block;
+    font-weight: 400;
+    font-size: .78rem;
+    color: #06122b;
+    opacity: .75;
+    margin-top: 2px;
+  }
+  section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 30px;
+    margin-bottom: 20px;
+  }
+  section h2 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--text-dim);
+    margin: 0 0 18px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .row:last-child { border-bottom: none; }
+  .row .label { font-weight: 600; }
+  .row .desc { color: var(--text-dim); font-size: .9rem; }
+  .row a {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .9rem;
+    white-space: nowrap;
+  }
+  .row a:hover { text-decoration: underline; }
+  code {
+    background: var(--mono-bg);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: .85em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  pre {
+    background: var(--mono-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: .85rem;
+    margin: 0;
+  }
+  ul { margin: 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  li strong { color: var(--text); }
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: .8rem;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="badge">http-server-projeto-korp</span>
+      <h1>Projeto Korp</h1>
+      <p class="subtitle">Servico Go containerizado, atras de proxy reverso NGINX, com metricas Prometheus e dashboard Grafana.</p>
+    </header>
+
+    <div class="cta">
+      <a class="btn" href="/projeto-korp">
+        Chamar GET /projeto-korp
+        <small>retorna JSON com nome e horario UTC atual</small>
+      </a>
+    </div>
+
+    <section>
+      <h2>Documentacao tecnica</h2>
+      <div class="row">
+        <div>
+          <div class="label">Endpoint da aplicacao</div>
+          <div class="desc">JSON dinamico, horario em UTC a cada requisicao</div>
+        </div>
+        <a href="/projeto-korp">/projeto-korp</a>
+      </div>
+      <div class="row">
+        <div>
+          <div class="label">Metricas (Prometheus)</div>
+          <div class="desc">Contador de requisicoes exposto pelo proprio servico</div>
+        </div>
+        <a href="/metrics">/metrics</a>
+      </div>
+      <div class="row">
+        <div>
+          <div class="label">Prometheus &mdash; targets</div>
+          <div class="desc">Confirma se o scrape do servico esta "UP"</div>
+        </div>
+        <a href="http://localhost:9090/targets" target="_blank" rel="noopener">localhost:9090/targets</a>
+      </div>
+      <div class="row">
+        <div>
+          <div class="label">Grafana &mdash; dashboard</div>
+          <div class="desc">Login padrao: <code>admin</code> / <code>admin</code></div>
+        </div>
+        <a href="http://localhost:3000/d/http-server-projeto-korp" target="_blank" rel="noopener">localhost:3000</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Como ver as metricas no Grafana</h2>
+      <ul>
+        <li><strong>1.</strong> Acesse <code>http://localhost:3000</code> e entre com <code>admin</code> / <code>admin</code>.</li>
+        <li><strong>2.</strong> O datasource <code>Prometheus</code> e o dashboard <code>http-server-projeto-korp</code> ja vem provisionados automaticamente &mdash; nenhum clique manual necessario.</li>
+        <li><strong>3.</strong> O dashboard mostra: <strong>Disponibilidade</strong> (metrica <code>up</code>), <strong>Requisicoes por segundo</strong>, <strong>Total de requisicoes</strong> e <strong>Requisicoes por status</strong>.</li>
+        <li><strong>4.</strong> Para gerar trafego de teste: <code>for i in {1..20}; do curl -s localhost/projeto-korp >/dev/null; done</code></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Arquitetura</h2>
+      <pre>cliente -&gt; nginx :80 -&gt; http-server-projeto-korp :8080 (rede korp-net)
+                 |
+                 +-- prometheus :9090 (scrape /metrics)
+                 +-- grafana    :3000 (datasource + dashboard provisionados)</pre>
+    </section>
+
+    <footer>Desafio Tecnico Korp &mdash; Docker, Golang, NGINX, Prometheus, Grafana e Ansible.</footer>
+  </div>
+</body>
+</html>

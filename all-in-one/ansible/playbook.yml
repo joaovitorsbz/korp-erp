@@ -1,0 +1,30 @@
+---
+- name: Provisionar Projeto Korp (Docker, NGINX, monitoramento)
+  hosts: korp
+  vars:
+    project_root: "{{ (playbook_dir + '/..') | realpath }}"
+    korp_service_name: http-server-projeto-korp
+    korp_service_port: 8080
+    korp_network_name: korp-net
+    korp_http_port: 80
+
+  pre_tasks:
+    - name: Verificar se o systemd e o PID 1 (necessario para o servico docker)
+      ansible.builtin.command: ps -p 1 -o comm=
+      register: pid1
+      changed_when: false
+
+    - name: Falhar cedo se systemd nao for o init do sistema
+      ansible.builtin.fail:
+        msg: >-
+          Este ambiente nao esta rodando systemd como PID 1 (encontrado: "{{ pid1.stdout }}").
+          No WSL2, habilite systemd em /etc/wsl.conf ([boot] systemd=true), rode
+          "wsl --shutdown" no Windows e reabra o terminal antes de rodar este playbook.
+      when: "'systemd' not in pid1.stdout"
+
+  roles:
+    - role: docker
+      become: true
+    - role: network
+    - role: stack
+    - role: validate
