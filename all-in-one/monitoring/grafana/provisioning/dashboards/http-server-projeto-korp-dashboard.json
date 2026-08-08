@@ -12,7 +12,7 @@
   "panels": [
     {
       "id": 1,
-      "title": "Disponibilidade",
+      "title": "Disponibilidade da aplicacao (backend)",
       "type": "stat",
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
       "datasource": { "type": "prometheus", "uid": "prometheus-korp" },
@@ -47,10 +47,46 @@
       }
     },
     {
+      "id": 5,
+      "title": "Disponibilidade do NGINX (proxy / entrada externa)",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus-korp" },
+      "targets": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus-korp" },
+          "expr": "up{job=\"nginx\"}",
+          "legendFormat": "up",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" } } },
+            { "type": "value", "options": { "1": { "text": "UP", "color": "green" } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "textMode": "auto",
+        "colorMode": "background"
+      }
+    },
+    {
       "id": 2,
       "title": "Requisicoes por segundo",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 18, "x": 6, "y": 0 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "datasource": { "type": "prometheus", "uid": "prometheus-korp" },
       "targets": [
         {
