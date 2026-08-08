@@ -35,7 +35,7 @@
   changed_when: true
 
 - name: Subir a stack completa (app, nginx, prometheus, grafana)
-  ansible.builtin.command: docker compose -f {{ project_root }}/docker-compose.yml up -d
+  ansible.builtin.command: docker compose -f {{ project_root }}/docker-compose.yml up -d --force-recreate
   args:
     chdir: "{{ project_root }}"
   environment:
