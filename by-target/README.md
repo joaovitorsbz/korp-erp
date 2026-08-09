@@ -29,7 +29,7 @@ Tudo isso é organizado e ligado automaticamente por uma ferramenta chamada
     assume Ubuntu Linux);
   - o **managed node** — a VM alvo, onde o serviço de fato vai subir.
     Nesta versão do projeto, ela já está definida no arquivo
-    `ansible/inventory.ini` (endereço `172.17.47.192`, usuário
+    `ansible/inventory.ini` (endereço ex: `172.17.47.192`, usuário
     `ec2-user`).
 
 - **As duas VMs precisam se enxergar na rede** (o control node precisa
