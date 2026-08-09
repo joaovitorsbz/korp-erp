@@ -175,21 +175,21 @@
           <div class="label">Prometheus &mdash; targets</div>
           <div class="desc">Confirma se o scrape do servico esta "UP"</div>
         </div>
-        <a href="http://localhost:9090/targets" target="_blank" rel="noopener">localhost:9090/targets</a>
+        <a id="prometheus-link" href="http://localhost:9090/targets" target="_blank" rel="noopener">localhost:9090/targets</a>
       </div>
       <div class="row">
         <div>
           <div class="label">Grafana &mdash; dashboard</div>
           <div class="desc">Login padrao: <code>admin</code> / <code>admin</code></div>
         </div>
-        <a href="http://localhost:3000/d/http-server-projeto-korp" target="_blank" rel="noopener">localhost:3000</a>
+        <a id="grafana-link" href="http://localhost:3000/d/http-server-projeto-korp" target="_blank" rel="noopener">localhost:3000</a>
       </div>
     </section>
 
     <section>
       <h2>Como ver as metricas no Grafana</h2>
       <ul>
-        <li><strong>1.</strong> Acesse <code>http://localhost:3000</code> e entre com <code>admin</code> / <code>admin</code>.</li>
+        <li><strong>1.</strong> Acesse <code id="grafana-url-text">http://localhost:3000</code> e entre com <code>admin</code> / <code>admin</code>.</li>
         <li><strong>2.</strong> O datasource <code>Prometheus</code> e o dashboard <code>http-server-projeto-korp</code> ja vem provisionados automaticamente &mdash; nenhum clique manual necessario.</li>
         <li><strong>3.</strong> O dashboard mostra: <strong>Disponibilidade</strong> (metrica <code>up</code>), <strong>Requisicoes por segundo</strong>, <strong>Total de requisicoes</strong> e <strong>Requisicoes por status</strong>.</li>
         <li><strong>4.</strong> Para gerar trafego de teste: <code>for i in {1..20}; do curl -s localhost/projeto-korp >/dev/null; done</code></li>
@@ -206,5 +206,20 @@
 
     <footer>Desafio Tecnico Korp &mdash; Docker, Golang, NGINX, Prometheus, Grafana e Ansible.</footer>
   </div>
+  <script>
+    (function () {
+      var host = window.location.hostname;
+
+      var promLink = document.getElementById('prometheus-link');
+      promLink.href = 'http://' + host + ':9090/targets';
+      promLink.textContent = host + ':9090/targets';
+
+      var grafanaLink = document.getElementById('grafana-link');
+      grafanaLink.href = 'http://' + host + ':3000/d/http-server-projeto-korp';
+      grafanaLink.textContent = host + ':3000';
+
+      document.getElementById('grafana-url-text').textContent = 'http://' + host + ':3000';
+    })();
+  </script>
 </body>
 </html>
