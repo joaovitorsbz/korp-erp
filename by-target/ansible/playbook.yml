@@ -28,6 +28,8 @@
     - role: docker
       become: true
     - role: network
+      become: true
     - role: sync
     - role: stack
+      become: true
     - role: validate
