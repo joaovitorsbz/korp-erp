@@ -1,0 +1,19 @@
+---
+- name: Aguardar o NGINX responder na porta {{ korp_http_port }}
+  ansible.builtin.wait_for:
+    host: localhost
+    port: "{{ korp_http_port }}"
+    timeout: 60
+
+- name: Fazer requisicao HTTP de validacao em /projeto-korp
+  ansible.builtin.uri:
+    url: "http://localhost:{{ korp_http_port }}/projeto-korp"
+    return_content: true
+  register: korp_response
+  retries: 5
+  delay: 3
+  until: korp_response.status == 200
+
+- name: Exibir resposta do servico no console
+  ansible.builtin.debug:
+    msg: "{{ korp_response.json }}"

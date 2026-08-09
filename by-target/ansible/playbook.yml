@@ -1,0 +1,33 @@
+---
+- name: Provisionar Projeto Korp (control node -> managed node via SSH)
+  hosts: korp
+  vars:
+    korp_service_name: http-server-projeto-korp
+    korp_service_port: 8080
+    korp_network_name: korp-net
+    korp_http_port: 80
+    # O control node e o managed node sao maquinas diferentes: os arquivos
+    # do projeto sao sincronizados (role "sync") para este diretorio no
+    # managed node antes do build/deploy.
+    project_root: "/home/{{ ansible_user }}/korp-by-target"
+
+  pre_tasks:
+    - name: Verificar se o systemd e o PID 1 (necessario para o servico docker)
+      ansible.builtin.command: ps -p 1 -o comm=
+      register: pid1
+      changed_when: false
+
+    - name: Falhar cedo se systemd nao for o init do sistema
+      ansible.builtin.fail:
+        msg: >-
+          O managed node nao esta rodando systemd como PID 1 (encontrado: "{{ pid1.stdout }}").
+          O servico docker depende de systemd nessa role.
+      when: "'systemd' not in pid1.stdout"
+
+  roles:
+    - role: docker
+      become: true
+    - role: network
+    - role: sync
+    - role: stack
+    - role: validate

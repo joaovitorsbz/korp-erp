@@ -1,0 +1,47 @@
+---
+- name: Instalar Docker Engine (Debian/Ubuntu)
+  when: ansible_facts['os_family'] == 'Debian'
+  block:
+    - name: Atualizar cache do apt
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Instalar Docker Engine e plugin docker compose (apt)
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose-v2
+        state: present
+
+- name: Instalar Docker Engine (Amazon Linux / RHEL)
+  when: ansible_facts['os_family'] == 'RedHat'
+  block:
+    - name: Instalar Docker Engine (dnf)
+      ansible.builtin.dnf:
+        name: docker
+        state: present
+
+    - name: Garantir diretorio de plugins do docker CLI
+      ansible.builtin.file:
+        path: /usr/libexec/docker/cli-plugins
+        state: directory
+        mode: "0755"
+
+    - name: Instalar plugin docker compose v2 (binario oficial, nao vem no dnf)
+      ansible.builtin.get_url:
+        url: "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-{{ ansible_facts['architecture'] }}"
+        dest: /usr/libexec/docker/cli-plugins/docker-compose
+        mode: "0755"
+
+- name: Garantir que o servico docker esta habilitado e ativo
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Adicionar usuario atual ao grupo docker (uso interativo futuro)
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    groups: docker
+    append: true

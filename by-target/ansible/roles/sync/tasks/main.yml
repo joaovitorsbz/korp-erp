@@ -1,0 +1,24 @@
+---
+# Control node e managed node sao maquinas diferentes neste cenario, entao
+# os arquivos do projeto (que vivem no control node, ao lado deste
+# playbook) precisam ser copiados para o managed node antes do build.
+
+- name: Criar diretorio do projeto no managed node
+  ansible.builtin.file:
+    path: "{{ project_root }}"
+    state: directory
+    mode: "0755"
+
+- name: Copiar codigo da aplicacao, nginx e monitoramento para o managed node
+  ansible.builtin.copy:
+    src: "{{ (playbook_dir + '/../' + item) | realpath }}/"
+    dest: "{{ project_root }}/{{ item }}/"
+  loop:
+    - app
+    - nginx
+    - monitoring
+
+- name: Copiar docker-compose.yml para o managed node
+  ansible.builtin.copy:
+    src: "{{ (playbook_dir + '/../docker-compose.yml') | realpath }}"
+    dest: "{{ project_root }}/docker-compose.yml"
