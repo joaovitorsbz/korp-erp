@@ -34,6 +34,20 @@
         dest: /usr/libexec/docker/cli-plugins/docker-compose
         mode: "0755"
 
+    - name: Descobrir versao mais recente do docker buildx
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/docker/buildx/releases/latest
+        return_content: true
+      register: buildx_release
+
+    - name: Instalar plugin docker buildx (exigido pelo "docker compose build", nao vem no dnf)
+      ansible.builtin.get_url:
+        url: >-
+          https://github.com/docker/buildx/releases/download/{{ buildx_release.json.tag_name }}/buildx-{{ buildx_release.json.tag_name }}.linux-{{
+          'amd64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}
+        dest: /usr/libexec/docker/cli-plugins/docker-buildx
+        mode: "0755"
+
 - name: Garantir que o servico docker esta habilitado e ativo
   ansible.builtin.systemd:
     name: docker
